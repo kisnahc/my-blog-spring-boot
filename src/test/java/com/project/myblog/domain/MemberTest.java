@@ -1,4 +1,4 @@
-package com.project.myblog.entity;
+package com.project.myblog.domain;
 
 import com.project.myblog.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
@@ -25,6 +25,10 @@ class MemberTest {
 
         //when
         Member findMember = memberRepository.findById(saveId.getId()).get();
+
+        Thread.sleep(1000);
+
+        findMember.lastModifiedUsername("memberB");
 
         //then
         assertThat(findMember.getId()).isEqualTo(member.getId());
