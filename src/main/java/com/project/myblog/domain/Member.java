@@ -1,5 +1,6 @@
 package com.project.myblog.domain;
 
+import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Email;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,16 +22,22 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
+    @NotNull
+    @Email
+    @Column(unique = true)
+    private String email;
+
     private String username;
     private int age;
 
-    public void lastModifiedUsername(String username) {
-        this.username = username;
+    public void lastModifiedEmail(String email) {
+        this.email = email;
         this.getLastModifiedDate();
     }
 
     @Builder
-    public Member(String username, int age) {
+    public Member(String email, String username, int age) {
+        this.email = email;
         this.username = username;
         this.age = age;
     }
