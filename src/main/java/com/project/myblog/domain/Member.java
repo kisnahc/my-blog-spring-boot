@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,18 +23,19 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @NotNull
+    @NotEmpty
     @Email
     @Column(unique = true)
     private String email;
 
+    @NotEmpty
     private String username;
     private int age;
 
-    public void lastModifiedEmail(String email) {
-        this.email = email;
-        this.getLastModifiedDate();
-    }
+//    public void lastModifiedEmail(String email) {
+//        this.email = email;
+//        this.getLastModifiedDate();
+//    }
 
     @Builder
     public Member(String email, String username, int age) {

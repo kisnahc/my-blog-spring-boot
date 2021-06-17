@@ -5,6 +5,7 @@ import com.project.myblog.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -63,6 +64,7 @@ class MemberServiceTest {
     }
 
     @Test
+    @Rollback(value = false)
     public void 회원_전체_조회() throws Exception {
         //given
         Member memberA = Member.builder()
