@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PostUpdate;
 import java.util.List;
 
 @Service
@@ -46,4 +47,12 @@ public class MemberService {
         return memberRepository.findById(memberId).get();
     }
 
+
+    @Transactional
+    @PostUpdate
+    public void updateMember(Long id, String email) {
+        Member member = memberRepository.findById(id).get();
+        validateDuplicateMember(member);
+        member.lastModifiedEmail(email);
+    }
 }

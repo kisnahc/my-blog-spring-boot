@@ -1,17 +1,13 @@
 package com.project.myblog.api;
 
 import com.project.myblog.domain.Member;
-import com.project.myblog.dto.CreateMemberRequestDto;
-import com.project.myblog.dto.CreateMemberResponseDto;
-import com.project.myblog.dto.FindMembersDto;
+import com.project.myblog.dto.*;
 import com.project.myblog.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +35,16 @@ public class MemberController {
                 .build();
         Long id = memberService.join(member);
 
-        return new CreateMemberResponseDto(id, member.getEmail());
+        return new CreateMemberResponseDto(id, member.getEmail(), LocalDateTime.now());
     }
 
+    @PutMapping("/api/members/{id}")
+    public UpdateMemberResponseDto updateMember(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid UpdateMemberRequestDto requestDto) {
+
+        memberService.updateMember(id, requestDto.getEmail());
+        Member findMember = memberService.findOne(id);
+        return new UpdateMemberResponseDto(findMember.getId(), findMember.getEmail(), LocalDateTime.now());
+    }
 }

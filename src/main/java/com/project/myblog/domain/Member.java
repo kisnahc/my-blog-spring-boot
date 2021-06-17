@@ -32,10 +32,10 @@ public class Member extends BaseTimeEntity {
     private String username;
     private int age;
 
-//    public void lastModifiedEmail(String email) {
-//        this.email = email;
-//        this.getLastModifiedDate();
-//    }
+    public void lastModifiedEmail(String email) {
+        this.email = email;
+        this.getLastModifiedDate();
+    }
 
     @Builder
     public Member(String email, String username, int age) {
