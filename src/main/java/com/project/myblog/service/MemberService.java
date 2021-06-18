@@ -49,7 +49,6 @@ public class MemberService {
 
 
     @Transactional
-    @PostUpdate
     public void updateMember(Long id, String email) {
         Member member = memberRepository.findById(id).get();
         validateDuplicateMember(member);

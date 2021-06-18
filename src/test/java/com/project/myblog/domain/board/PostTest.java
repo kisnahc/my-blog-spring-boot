@@ -24,33 +24,36 @@ class PostTest {
     private MemberRepository memberRepository;
 
     @Test
+    @Rollback(value = false)
     public void testPost() throws Exception {
         //given
 
         Member memberA = Member.builder()
+                .email("spring@naver.com")
                 .username("memberA")
                 .age(30)
                 .build();
 
         memberRepository.save(memberA);
 
-        Post post_2 = Post.builder()
+        Post post = Post.builder()
+                .title("hello jpa")
                 .author(memberA)
                 .content("hello spring")
                 .commentList(null)
                 .build();
 
-        Post savePost = postRepository.save(post_2);
+        Post savePost = postRepository.save(post);
 
         //when
         Post findPost = postRepository.findById(savePost.getId()).get();
 
         Thread.sleep(2000);
 
-        findPost.lastModifiedPost("hello spring data jpa");
+        findPost.lastModifiedPost("hello spring data jpa", "helloJpa");
 
         //then
-        Assertions.assertThat(findPost.getId()).isEqualTo(post_2.getId());
+        Assertions.assertThat(findPost.getId()).isEqualTo(post.getId());
     }
 
 }

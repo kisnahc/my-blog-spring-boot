@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,30 +23,38 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long id;
 
+    @NotEmpty
+    private String title;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member author;
 
     @Lob
+    @NotEmpty
     private String content;
+
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> commentList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "post")
-    private List<Comment> commentList = new ArrayList<>();
-
-    public void lastModifiedPost(String content) {
+    public void lastModifiedPost(String title, String content) {
+        this.title = title;
         this.content = content;
         this.getLastModifiedDate();
     }
 
     @Builder
-    public Post(Member author, String content, Board board, List<Comment> commentList) {
+    public Post(String title, Member author, String content, List<Comment> commentList, Board board) {
+        this.title = title;
         this.author = author;
         this.content = content;
-        this.board = board;
         this.commentList = commentList;
+        this.board = board;
     }
 }

@@ -17,7 +17,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/members")
+    @GetMapping("/api/members")
     public List<FindMembersDto> memberList() {
         List<Member> memberList = memberService.findMembers();
         List<FindMembersDto> result = memberList.stream()
@@ -38,7 +38,16 @@ public class MemberController {
         return new CreateMemberResponseDto(id, member.getEmail(), LocalDateTime.now());
     }
 
-    @PutMapping("/api/members/{id}")
+//    @PutMapping("/api/members/{id}")
+//    public UpdateMemberResponseDto updateMember(
+//            @PathVariable("id") Long id,
+//            @RequestBody @Valid UpdateMemberRequestDto requestDto) {
+//
+//        memberService.updateMember(id, requestDto.getEmail());
+//        Member findMember = memberService.findOne(id);
+//        return new UpdateMemberResponseDto(findMember.getId(), findMember.getEmail(), LocalDateTime.now());
+//    }
+    @PatchMapping("/api/members/{id}")
     public UpdateMemberResponseDto updateMember(
             @PathVariable("id") Long id,
             @RequestBody @Valid UpdateMemberRequestDto requestDto) {

@@ -23,12 +23,12 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "이메일을 입력해 주세요.")
     @Email
     @Column(unique = true)
     private String email;
 
-    @NotEmpty
+    @NotEmpty(message = "이름을 입력해 주세요.")
     private String username;
     private int age;
 
