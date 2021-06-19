@@ -1,6 +1,9 @@
 package com.project.myblog.service;
 
+import com.project.myblog.domain.Member;
 import com.project.myblog.domain.board.Post;
+import com.project.myblog.dto.CreatePostRequestDto;
+import com.project.myblog.repository.MemberRepository;
 import com.project.myblog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,15 +16,20 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class PostService {
 
+    private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
     /**
      * 게시글_등록
      */
     @Transactional
-    public Long createPost(Post post) {
-        postRepository.save(post);
-        return post.getId();
+    public Long createPost(CreatePostRequestDto requestDto) {
+
+        Member member = memberRepository.findByEmail(requestDto.getAuthorEmail())
+                .orElseThrow(() -> new IllegalArgumentException(""));
+
+        Post savedPost = postRepository.save(requestDto.toPost(member));
+        return savedPost.getId();
     }
 
     /**
@@ -50,7 +58,7 @@ public class PostService {
     /**
      * 게시글_삭제
      */
-    public void deletePost(Post post) {
-        postRepository.delete(post);
+    public void deletePost(Long id) {
+        postRepository.deleteById(id);
     }
 }

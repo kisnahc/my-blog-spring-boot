@@ -26,16 +26,16 @@ public class MemberController {
         return result;
     }
 
+    @GetMapping("/api/members/{id}")
+    public Member findOne(@PathVariable("id") Long memberId) {
+        Member findMember = memberService.findOne(memberId);
+        return findMember;
+    }
+
     @PostMapping("/api/members")
     public CreateMemberResponseDto joinMember(@RequestBody @Valid CreateMemberRequestDto requestDto) {
-        Member member = Member.builder()
-                .email(requestDto.getEmail())
-                .username(requestDto.getUsername())
-                .age(requestDto.getAge())
-                .build();
-        Long id = memberService.join(member);
-
-        return new CreateMemberResponseDto(id, member.getEmail(), LocalDateTime.now());
+        Long id = memberService.join(requestDto);
+        return new CreateMemberResponseDto(id, requestDto.getEmail(), LocalDateTime.now());
     }
 
 //    @PutMapping("/api/members/{id}")
@@ -47,6 +47,7 @@ public class MemberController {
 //        Member findMember = memberService.findOne(id);
 //        return new UpdateMemberResponseDto(findMember.getId(), findMember.getEmail(), LocalDateTime.now());
 //    }
+
     @PatchMapping("/api/members/{id}")
     public UpdateMemberResponseDto updateMember(
             @PathVariable("id") Long id,
@@ -56,4 +57,5 @@ public class MemberController {
         Member findMember = memberService.findOne(id);
         return new UpdateMemberResponseDto(findMember.getId(), findMember.getEmail(), LocalDateTime.now());
     }
+
 }

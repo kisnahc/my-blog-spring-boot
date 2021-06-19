@@ -26,9 +26,9 @@ public class Post extends BaseTimeEntity {
     @NotEmpty
     private String title;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @NotNull
     private Member author;
 
     @Lob

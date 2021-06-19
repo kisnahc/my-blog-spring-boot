@@ -1,13 +1,15 @@
 package com.project.myblog.service;
 
 import com.project.myblog.domain.Member;
+import com.project.myblog.dto.CreateMemberRequestDto;
 import com.project.myblog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
-import javax.persistence.PostUpdate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,14 +22,14 @@ public class MemberService {
      * 회원가입
      */
     @Transactional
-    public Long join(Member member) {
-        validateDuplicateMember(member);
-        memberRepository.save(member);
-        return member.getId();
+    public Long join(CreateMemberRequestDto requestDto) {
+        validateDuplicateMember(requestDto.getEmail());
+        Member savedMember = memberRepository.save(requestDto.toMember());
+        return savedMember.getId();
     }
 
-    private void validateDuplicateMember(Member member) {
-        List<Member> findMembers = memberRepository.findByEmail(member.getEmail());
+    private void validateDuplicateMember(String email) {
+        Optional<Member> findMembers = memberRepository.findByEmail(email);
         if (!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
@@ -51,7 +53,7 @@ public class MemberService {
     @Transactional
     public void updateMember(Long id, String email) {
         Member member = memberRepository.findById(id).get();
-        validateDuplicateMember(member);
+        validateDuplicateMember(email);
         member.lastModifiedEmail(email);
     }
 }

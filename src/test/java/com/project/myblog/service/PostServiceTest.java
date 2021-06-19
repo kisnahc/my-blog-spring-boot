@@ -1,7 +1,8 @@
 package com.project.myblog.service;
 
-import com.project.myblog.domain.Member;
 import com.project.myblog.domain.board.Post;
+import com.project.myblog.dto.CreateMemberRequestDto;
+import com.project.myblog.dto.CreatePostRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -28,20 +26,12 @@ class PostServiceTest {
     @Rollback(value = false)
     public void createPost() throws Exception {
         //given
-        Member member = Member.builder()
-                .email("1@naver.com")
-                .username("kang")
-                .age(30)
-                .build();
 
-        memberService.join(member);
+        CreateMemberRequestDto memberA = getCreateMemberRequestDto("spring@naver.com", "kang", 30);
 
-        Post post = Post.builder()
-                .title("title spring")
-                .author(member)
-                .content("Hello Spring")
-                .board(null)
-                .build();
+        memberService.join(memberA);
+
+        CreatePostRequestDto post = getCreatePost("title spring", "spring@naver.com", "Hello Spring");
 
         Long savedId = postService.createPost(post);
 
@@ -49,68 +39,23 @@ class PostServiceTest {
         Post findPost = postService.findPost(savedId);
 
         //then
-        Assertions.assertThat(findPost.getId()).isEqualTo(post.getId());
-        Assertions.assertThat(findPost.getAuthor()).isEqualTo(post.getAuthor());
+        Assertions.assertThat(findPost.getAuthor().getEmail()).isEqualTo(post.getAuthorEmail());
     }
 
-    @Test
-    public void postList() throws Exception {
-        //given
-        Member member = Member.builder()
-                .email("1@naver.com")
-                .username("kang")
-                .age(30)
-                .build();
 
-        memberService.join(member);
-
-        Post post1 = Post.builder()
-                .title("title spring")
-                .author(member)
-                .content("Hello Spring")
-                .board(null)
-                .build();
-
-        Post post2 = Post.builder()
-                .title("title jpa")
-                .author(member)
-                .content("Hello Jpa")
-                .board(null)
-                .build();
-
-        postService.createPost(post1);
-        postService.createPost(post2);
-
-        //when
-        List<Post> postList = postService.PostList();
-
-        //then
-        Assertions.assertThat(postList.size()).isEqualTo(2);
+    private CreateMemberRequestDto getCreateMemberRequestDto(String email, String username, int age) {
+        CreateMemberRequestDto requestDto = new CreateMemberRequestDto();
+        requestDto.setEmail(email);
+        requestDto.setUsername(username);
+        requestDto.setAge(age);
+        return requestDto;
     }
 
-    @Test
-    @Rollback(value = false)
-    public void updatePost() throws Exception {
-        //given
-        Member member = Member.builder()
-                .email("1@naver.com")
-                .username("kang")
-                .age(30)
-                .build();
-
-        memberService.join(member);
-
-        Post post = Post.builder()
-                .title("title spring")
-                .author(member)
-                .content("Hello Spring")
-                .board(null)
-                .build();
-
-        Long savedId = postService.createPost(post);
-
-        //when
-        postService.updatePost(savedId, "jpa!!!!!", "jpa is ...");
-
+    private CreatePostRequestDto getCreatePost(String title, String author, String content) {
+        CreatePostRequestDto requestDto = new CreatePostRequestDto();
+        requestDto.setTitle(title);
+        requestDto.setAuthorEmail(author);
+        requestDto.setContent(content);
+        return requestDto;
     }
 }
