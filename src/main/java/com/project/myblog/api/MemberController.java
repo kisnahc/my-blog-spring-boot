@@ -4,6 +4,7 @@ import com.project.myblog.domain.Member;
 import com.project.myblog.dto.*;
 import com.project.myblog.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,19 +19,14 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/api/members")
-    public List<FindMembersDto> memberList() {
+    public List<FindMembersResponseDto> memberList() {
         List<Member> memberList = memberService.findMembers();
-        List<FindMembersDto> result = memberList.stream()
-                .map(member -> new FindMembersDto(member))
+        List<FindMembersResponseDto> result = memberList.stream()
+                .map(member -> new FindMembersResponseDto(member.getEmail(), member.getUsername()))
                 .collect(Collectors.toList());
         return result;
     }
 
-    @GetMapping("/api/members/{id}")
-    public Member findOne(@PathVariable("id") Long memberId) {
-        Member findMember = memberService.findOne(memberId);
-        return findMember;
-    }
 
     @PostMapping("/api/members")
     public CreateMemberResponseDto joinMember(@RequestBody @Valid CreateMemberRequestDto requestDto) {
@@ -38,24 +34,23 @@ public class MemberController {
         return new CreateMemberResponseDto(id, requestDto.getEmail(), LocalDateTime.now());
     }
 
-//    @PutMapping("/api/members/{id}")
-//    public UpdateMemberResponseDto updateMember(
-//            @PathVariable("id") Long id,
-//            @RequestBody @Valid UpdateMemberRequestDto requestDto) {
-//
-//        memberService.updateMember(id, requestDto.getEmail());
-//        Member findMember = memberService.findOne(id);
-//        return new UpdateMemberResponseDto(findMember.getId(), findMember.getEmail(), LocalDateTime.now());
-//    }
-
-    @PatchMapping("/api/members/{id}")
-    public UpdateMemberResponseDto updateMember(
-            @PathVariable("id") Long id,
-            @RequestBody @Valid UpdateMemberRequestDto requestDto) {
-
-        memberService.updateMember(id, requestDto.getEmail());
-        Member findMember = memberService.findOne(id);
-        return new UpdateMemberResponseDto(findMember.getId(), findMember.getEmail(), LocalDateTime.now());
+    @GetMapping("/api/members/email")
+    public FindByEmailResponseDto findByEmail(@RequestBody @Valid FindByEmailRequestDto requestDto) {
+        Member findMember = memberService.findByEmail(requestDto);
+        return new FindByEmailResponseDto(requestDto.getEmail(), findMember.getUsername());
     }
 
+    @PatchMapping("/api/members/{id}")
+    public UpdateMemberResponseDto updateMember(@PathVariable("id") Long id,
+                                                @RequestBody @Valid UpdateMemberRequestDto requestDto) {
+        memberService.updateMember(id, requestDto.getEmail());
+        Member member = memberService.findById(id);
+        return new UpdateMemberResponseDto(member.getId(), requestDto.getEmail(), LocalDateTime.now());
+    }
+
+    @DeleteMapping("/api/members/{id}")
+    public String deleteMember(@PathVariable("id") Long id) {
+        memberService.deleteMember(id);
+        return "delete successful";
+    }
 }

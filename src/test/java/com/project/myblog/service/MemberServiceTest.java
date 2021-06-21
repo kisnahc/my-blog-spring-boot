@@ -2,7 +2,9 @@ package com.project.myblog.service;
 
 import com.project.myblog.domain.Member;
 import com.project.myblog.dto.CreateMemberRequestDto;
+import com.project.myblog.dto.FindByEmailRequestDto;
 import com.project.myblog.repository.MemberRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,8 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class MemberServiceTest {
 
     @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
     private MemberService memberService;
 
     @Test
@@ -32,7 +32,7 @@ class MemberServiceTest {
         Long savedId = memberService.join(requestDto);
 
         //then
-        assertThat(requestDto.get).isEqualTo(savedId);
+        Assertions.assertThat(savedId.equals(requestDto));
     }
 
 
@@ -50,40 +50,46 @@ class MemberServiceTest {
         assertEquals("이미 존재하는 회원입니다.", thrown.getMessage());
     }
 
-//    @Test
-//    @Rollback(value = false)
-//    public void 회원_전체_조회() throws Exception {
-//        //given
-//        CreateMemberRequestDto requestDto1 = getCreateMemberRequestDto("spring@naver.com", "kang", 30);
-//        CreateMemberRequestDto requestDto2 = getCreateMemberRequestDto("spring@naver.com", "kang", 30);
-//
-//        memberService.join(requestDto1);
-//        memberService.join(requestDto2);
-//
-//        //when
-//        List<CreateMemberRequestDto> members = memberService.findMembers();
-//
-//        //then
-//
-//        assertThat(members.size()).isEqualTo(2);
-//    }
+    @Test
+    public void 회원_전체_조회() throws Exception {
+        //given
+        CreateMemberRequestDto requestDto1 = getCreateMemberRequestDto("spring@naver.com", "kang", 30);
+        CreateMemberRequestDto requestDto2 = getCreateMemberRequestDto("jpa@naver.com", "kim", 30);
 
+        memberService.join(requestDto1);
+        memberService.join(requestDto2);
+
+        //when
+        List<Member> members = memberService.findMembers();
+
+        //then
+
+        assertThat(members.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void 회원_이메일_조회() throws Exception {
+        //given
+        CreateMemberRequestDto member = getCreateMemberRequestDto("spring@naver.com", "kang", 30);
+        memberService.join(member);
+
+        //when
+        Member findMember = memberService.findByEmail(new FindByEmailRequestDto());
+        //then
+        assertThat(findMember.getEmail()).isEqualTo(member.getEmail());
+    }
+    
 //    @Test
-//    public void 회원_조회() throws Exception {
+//    public void 회원_수정() throws Exception {
 //        //given
-//        Member memberA = Member.builder()
-//                .email("spring@naver.com")
-//                .username("memberA")
-//                .age(30)
-//                .build();
-//
-//        memberService.join(memberA);
+//        CreateMemberRequestDto member = getCreateMemberRequestDto("spring@naver.com", "kang", 30);
+//        Long memberId = memberService.join(member);
 //
 //        //when
-//        Member findMember = memberService.findOne(memberA.getId());
+//        memberService.updateMember(memberId, "jpa@naver.com");
 //
 //        //then
-//        assertThat(findMember.getId()).isEqualTo(memberA.getId());
+//        Assertions.assertThat().isEqualTo(member.getEmail()memberService.findByEmail("jpa@naver.com"));
 //    }
 
     private CreateMemberRequestDto getCreateMemberRequestDto(String email, String username, int age) {

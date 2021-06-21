@@ -34,7 +34,6 @@ public class Member extends BaseTimeEntity {
 
     public void lastModifiedEmail(String email) {
         this.email = email;
-        this.getLastModifiedDate();
     }
 
     @Builder

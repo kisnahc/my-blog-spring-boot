@@ -35,6 +35,7 @@ public class Post extends BaseTimeEntity {
     @NotEmpty
     private String content;
 
+    private long count;
 
     @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
@@ -54,6 +55,7 @@ public class Post extends BaseTimeEntity {
         this.title = title;
         this.author = author;
         this.content = content;
+        this.count = 0;
         this.commentList = commentList;
         this.board = board;
     }
