@@ -3,8 +3,8 @@ package com.project.myblog.api;
 import com.project.myblog.domain.Member;
 import com.project.myblog.dto.*;
 import com.project.myblog.service.MemberService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,17 +18,18 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/api/members")
-    public List<FindMembersResponseDto> memberList() {
+    @GetMapping("/api/members/")
+    public Result memberList() {
         List<Member> memberList = memberService.findMembers();
-        List<FindMembersResponseDto> result = memberList.stream()
+        List<FindMembersResponseDto> collect = memberList.stream()
                 .map(member -> new FindMembersResponseDto(member.getEmail(), member.getUsername()))
                 .collect(Collectors.toList());
-        return result;
+
+        return new Result( collect.size(), collect);
     }
 
 
-    @PostMapping("/api/members")
+    @PostMapping("/api/members/")
     public CreateMemberResponseDto joinMember(@RequestBody @Valid CreateMemberRequestDto requestDto) {
         Long id = memberService.join(requestDto);
         return new CreateMemberResponseDto(id, requestDto.getEmail(), LocalDateTime.now());
@@ -52,5 +53,17 @@ public class MemberController {
     public String deleteMember(@PathVariable("id") Long id) {
         memberService.deleteMember(id);
         return "delete successful";
+    }
+
+    @Data
+    public class Result<T> {
+
+        private int count;
+        private T data;
+
+        public Result( int count, T data) {
+            this.count = count;
+            this.data = data;
+        }
     }
 }
