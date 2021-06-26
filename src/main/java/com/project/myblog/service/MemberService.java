@@ -1,9 +1,8 @@
 package com.project.myblog.service;
 
 import com.project.myblog.domain.Member;
-import com.project.myblog.dto.CreateMemberRequestDto;
-import com.project.myblog.dto.CreateMemberResponseDto;
-import com.project.myblog.dto.FindByEmailRequestDto;
+import com.project.myblog.domain.memberDto.CreateMemberRequestDto;
+import com.project.myblog.domain.memberDto.FindByEmailRequestDto;
 import com.project.myblog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

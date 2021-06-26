@@ -1,4 +1,4 @@
-package com.project.myblog.dto;
+package com.project.myblog.domain.memberDto;
 
 import com.project.myblog.domain.Member;
 import lombok.Getter;

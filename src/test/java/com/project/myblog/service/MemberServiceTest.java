@@ -1,14 +1,12 @@
 package com.project.myblog.service;
 
 import com.project.myblog.domain.Member;
-import com.project.myblog.dto.CreateMemberRequestDto;
-import com.project.myblog.dto.FindByEmailRequestDto;
-import com.project.myblog.repository.MemberRepository;
+import com.project.myblog.domain.memberDto.CreateMemberRequestDto;
+import com.project.myblog.domain.memberDto.FindByEmailRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

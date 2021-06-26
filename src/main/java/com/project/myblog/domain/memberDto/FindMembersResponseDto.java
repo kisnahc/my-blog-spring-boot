@@ -1,17 +1,16 @@
-package com.project.myblog.dto;
+package com.project.myblog.domain.memberDto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
-public class FindByEmailResponseDto {
+public class FindMembersResponseDto {
 
     private String email;
     private String name;
 
-    public FindByEmailResponseDto(String email, String name) {
+    public FindMembersResponseDto(String email, String name) {
         this.email = email;
         this.name = name;
     }

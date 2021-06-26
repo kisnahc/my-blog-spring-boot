@@ -1,7 +1,7 @@
 package com.project.myblog.api;
 
 import com.project.myblog.domain.Member;
-import com.project.myblog.dto.*;
+import com.project.myblog.domain.memberDto.*;
 import com.project.myblog.service.MemberService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

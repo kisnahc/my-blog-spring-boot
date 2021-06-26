@@ -1,10 +1,12 @@
-package com.project.myblog.dto;
+package com.project.myblog.domain.postDto;
 
 import com.project.myblog.domain.Member;
+import com.project.myblog.domain.board.Board;
 import com.project.myblog.domain.board.Post;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -15,10 +17,13 @@ public class CreatePostRequestDto {
     @NotEmpty(message = "제목을 작성해 주세요.")
     private String title;
 
-    private String authorEmail;
+    @Email
+    @NotEmpty
+    private String author;
 
     @NotNull
     private String content;
+
 
     public Post toPost(Member member) {
         return Post.builder()
@@ -27,4 +32,5 @@ public class CreatePostRequestDto {
                 .content(getContent())
                 .build();
     }
+
 }

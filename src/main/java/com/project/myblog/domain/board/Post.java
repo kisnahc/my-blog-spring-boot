@@ -47,7 +47,6 @@ public class Post extends BaseTimeEntity {
     public void lastModifiedPost(String title, String content) {
         this.title = title;
         this.content = content;
-        this.getLastModifiedDate();
     }
 
     @Builder

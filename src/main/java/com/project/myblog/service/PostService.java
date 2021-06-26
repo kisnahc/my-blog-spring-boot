@@ -1,8 +1,10 @@
 package com.project.myblog.service;
 
 import com.project.myblog.domain.Member;
+import com.project.myblog.domain.board.Board;
 import com.project.myblog.domain.board.Post;
-import com.project.myblog.dto.CreatePostRequestDto;
+import com.project.myblog.domain.postDto.CreatePostRequestDto;
+import com.project.myblog.domain.postDto.FindPostByTitleRequestDto;
 import com.project.myblog.repository.MemberRepository;
 import com.project.myblog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +28,8 @@ public class PostService {
     @Transactional
     public Long createPost(CreatePostRequestDto requestDto) {
 
-        Member member = memberRepository.findByEmail(requestDto.getAuthorEmail())
-                .orElseThrow(() -> new IllegalArgumentException(""));
+        Member member = memberRepository.findByEmail(requestDto.getAuthor())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 입니다."));
 
         Post savedPost = postRepository.save(requestDto.toPost(member));
         return savedPost.getId();
@@ -40,10 +43,19 @@ public class PostService {
     }
 
     /**
-     * 게시글_단건_조회
+     * 게시글_ID_조회
      */
-    public Post findPost(Long postId) {
-        return postRepository.findById(postId).get();
+    public Post findById(Long id) {
+        Optional<Post> postId = postRepository.findById(id);
+        return postId.orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+    }
+
+    /**
+     * 게시글_조회
+     */
+    public Post findPostByTitle(FindPostByTitleRequestDto requestDto) {
+        return postRepository.findPostByTitle(requestDto.toFindPost().getTitle())
+                .orElseThrow(() -> new IllegalArgumentException("해당 제목의 게시글이 존재하지 않습니다."));
     }
 
     /**
